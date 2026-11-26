@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Game Dev Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#10142e;--p:#1b2250;--p2:#26307a;--ln:#3f4ca8;--ink:#f2f5ff;--mu:#a9b2e8;--tl:#2ec4b6;--or:#ff7a45;--sun:#ffd23f;--pk:#ff4f8b;--mt:#4ff2a0;--px:'Press Start 2P','Courier New',monospace;--b:'Chakra Petch','Trebuchet MS',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--b);color:var(--ink);min-height:100vh;background:radial-gradient(800px 450px at 85% -10%,#2ec4b633,transparent 60%),radial-gradient(700px 400px at 0 105%,#ff7a4530,transparent 60%),var(--bg);background-attachment:fixed;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:30px 30px}
+.sc{display:none;position:relative;min-height:100vh;padding:16px 14px}.sc.on{display:block}
+.card{background:var(--p);border:3px solid var(--ln);border-radius:16px;padding:22px 20px;box-shadow:0 8px 0 #090c20,0 20px 40px #0006}
+h1,h2{font-family:var(--px);line-height:1.6}
+.btn{cursor:pointer;border:0;border-radius:12px;font-family:var(--px);font-size:12px;padding:15px 20px;color:#2b1204;background:var(--or);border-bottom:6px solid #b8481a;transition:transform .08s}
+.btn:active{transform:translateY(4px);border-bottom-width:2px}.btn.tl{background:var(--tl);color:#04302c;border-bottom-color:#188378}.btn.gh{background:var(--p2);color:var(--ink);border-bottom-color:#111850}
+#intro{display:none;align-items:center;justify-content:center}#intro.on{display:flex}
+.iw{max-width:900px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
+.lg{display:flex;gap:8px;margin-bottom:18px}.lg i{font-style:normal;font-size:30px;width:58px;height:58px;display:grid;place-items:center;background:var(--p2);border:3px solid var(--ln);border-bottom-width:7px;border-radius:10px;animation:bob 2.4s ease-in-out infinite}.lg i:nth-child(2){animation-delay:.2s}.lg i:nth-child(3){animation-delay:.4s}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.iw h1{font-size:clamp(16px,2.6vw,24px);margin-bottom:12px}.iw p{color:var(--mu);font-size:16px;line-height:1.5;margin-bottom:14px}
+.tg{display:flex;gap:8px;flex-wrap:wrap}.tg span{background:var(--p);border:2px solid var(--ln);border-radius:10px;padding:8px 12px;font-weight:700;font-size:14px}
+.f{margin-bottom:14px}.f label{display:block;font-weight:700;margin-bottom:6px}
+.f input,.f select{width:100%;height:50px;border-radius:10px;border:2px solid var(--ln);background:#0b0e24;color:var(--ink);padding:0 14px;font:600 17px var(--b)}
+.f input:focus,.f select:focus{outline:none;border-color:var(--tl)}.f .e{display:none;color:#ff9bbd;font-size:13px;margin-top:5px}.f.bad .e{display:block}.f.bad input,.f.bad select{border-color:var(--pk)}
+.gm{max-width:860px;margin:0 auto}
+.hud{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--p);border:3px solid var(--ln);border-radius:14px;padding:10px 14px}
+.hud .w{flex:1;min-width:140px}.hud b{display:block}.hud small{color:var(--mu)}
+.hr{display:flex;gap:6px;font-size:26px}.hr i{font-style:normal;transition:.3s}.hr i.x{filter:grayscale(1) brightness(.5);transform:scale(.8)}
+.st{text-align:right}.st small{display:block;font-size:12px}.st b{font-family:var(--px);color:var(--sun);font-size:15px}
+.pg{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin:10px 0}.pg i{height:9px;border-radius:9px;background:#0b0e24;border:2px solid var(--ln)}.pg i.d{background:var(--tl);border-color:var(--tl)}.pg i.c{background:var(--or);border-color:var(--or)}
+.rd{background:var(--p);border:3px solid var(--ln);border-radius:14px;padding:16px}
+.tp{display:inline-block;font-family:var(--px);font-size:10px;background:var(--tl);color:#04302c;padding:7px 10px;border-radius:8px;margin-bottom:10px}
+.rd h3{font-size:20px;line-height:1.4}.rd .in{color:var(--mu);font-size:15px;margin:4px 0 14px}
+.mc{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mc>div{display:grid;gap:10px;align-content:start}
+.k{cursor:pointer;font:600 16px var(--b);color:var(--ink);background:var(--p2);border:2px solid var(--ln);border-bottom-width:5px;border-radius:12px;padding:13px;text-align:left;transition:transform .1s;min-height:50px}
+.k:hover{border-color:var(--tl)}.k.sel{background:#7a4a14;border-color:var(--sun);transform:translateY(-3px)}.k.ok{background:#0f6b43;border-color:var(--mt);cursor:default;animation:pop .4s}.k.no{background:#7a1741;border-color:var(--pk);animation:sh .35s}
+.k b{font-family:var(--px);font-size:11px;color:var(--sun);margin-right:9px}
+.od{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cz{position:relative;height:330px;overflow:hidden;border-radius:12px;background:linear-gradient(#0b0e24,#1a2a5e);border:2px solid var(--ln)}
+.cd{position:absolute;top:0;max-width:200px;cursor:pointer;background:var(--tl);color:#04302c;font-weight:700;font-size:15px;line-height:1.25;padding:11px 13px;border-radius:12px;border-bottom:5px solid #188378;animation:fall 6.5s linear forwards;user-select:none;-webkit-tap-highlight-color:transparent}
+.cd.g{animation:got .35s forwards;background:var(--mt)}.cd.b{animation:bad .4s forwards;background:var(--pk);color:#fff}
+@keyframes fall{from{transform:translateY(-70px)}to{transform:translateY(340px)}}
+@keyframes got{to{transform:scale(1.5);opacity:0}}@keyframes bad{to{transform:scale(.4) rotate(25deg);opacity:0}}
+@keyframes pop{50%{transform:scale(1.07)}}@keyframes sh{25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)}}
+.sh{animation:sh .4s}
+.ct{font-weight:700;color:var(--mu);margin-top:10px;font-size:14px}
+.fb{display:none;margin-top:14px;padding:14px 16px;border-radius:12px;border:2px solid var(--tl);background:#2ec4b622;line-height:1.5;font-size:15.5px}.fb.on{display:block}.fb.m{border-color:var(--or);background:#ff7a4522}.fb button{margin-top:12px}
+.ov{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:16px;background:#080a1ce6;overflow:auto}.ov.on{display:flex}
+.rs{max-width:500px;width:100%;text-align:center}.rs .em{font-size:64px}.rs h2{font-size:15px;margin:10px 0}
+.rs .big{font-family:var(--px);font-size:48px;color:var(--sun);text-shadow:0 5px 0 #000a}.rs .big small{font-size:16px;color:var(--mu)}
+.rs p{color:var(--mu);margin:6px 0}.sv{margin:16px 0;padding:11px;border-radius:10px;border:2px solid var(--ln);background:#0b0e24;font-weight:700}.sv.ok{border-color:var(--mt);color:var(--mt)}.sv.fail{border-color:var(--pk);color:#ffb0cb}
+.ra{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+@media(max-width:700px){.iw{grid-template-columns:1fr}.mc,.od{grid-template-columns:1fr}.mc{gap:10px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important}}
+</style></head><body>
+
+<section id="intro" class="sc on"><div class="iw">
+ <div><div class="lg"><i>🎮</i><i>🧩</i><i>⚙️</i></div><h1>Game Dev Lab</h1>
+  <p>Masuk ke laboratorium pembuat game. Jodohkan, susun, dan tangkap konsep Game Engine di 10 misi seru. Hati-hati, salah langkah mengurangi nyawa!</p>
+  <div class="tg"><span>❤️ 7 nyawa</span><span>🧩 10 misi</span><span>⭐ 10 poin / misi</span></div></div>
+ <form class="card" id="fm" novalidate autocomplete="off"><h2 style="font-size:13px;color:var(--tl);margin-bottom:18px">Data pemain</h2>
+  <div class="f" id="f1"><label for="nm">Nama</label><input id="nm" maxlength="60" placeholder="Nama lengkap"><div class="e">Nama wajib diisi.</div></div>
+  <div class="f" id="f2"><label for="np">NPM</label><input id="np" maxlength="25" placeholder="Contoh: 2201234567 atau 22A1234" autocapitalize="characters"><div class="e">NPM hanya huruf, angka, titik, strip, atau garis miring (min. 4 karakter).</div></div>
+  <div class="f" id="f3"><label for="kl">Kelas</label><select id="kl"><option value="">Pilih kelas</option><option>Kelas C</option><option>Kelas D</option><option>Kelas E</option></select><div class="e">Pilih kelasmu.</div></div>
+  <button class="btn" style="width:100%" type="submit">Mulai misi</button></form>
+</div></section>
+
+<section id="game" class="sc"><div class="gm">
+ <div class="hud"><div class="w"><b id="hn"></b><small id="hm"></small></div><div class="hr" id="hr"></div><div class="st"><small>Skor</small><b id="hs">0</b></div><div class="st"><small>Misi</small><b id="hq">1/10</b></div></div>
+ <div class="pg" id="pg"></div>
+ <div class="rd"><span class="tp" id="tp"></span><h3 id="rh"></h3><div class="in" id="ri"></div><div id="pl"></div>
+  <div class="fb" id="fb"><div id="ft"></div><button class="btn tl" id="nx">Lanjut</button></div></div>
+</div></section>
+
+<div class="ov" id="ov"><div class="card rs"><div class="em" id="re"></div><h2 id="rt"></h2><p id="rw"></p>
+ <div class="big"><span id="rsc">0</span><small> / 100</small></div><p id="rd"></p><div class="sv" id="sv"></div>
+ <div class="ra"><button class="btn" id="rr" style="display:none">Kirim ulang</button><button class="btn gh" id="ra">Main lagi</button></div></div></div>
+
+<script>
+const CFG={URL:"https://script.google.com/macros/s/AKfycbwr5VbuDnMP5NVPKnOcg6usq-H0MQk7KN43Nvc6P9rhRbwkj1B6Vn_BcpqwoGuV_5qREw/exec",LIVES:7,PT:10,PEN:5};
+const R=[
+{t:"match",h:"Jodohkan engine dengan bahasa pemrogramannya",p:[["Unity","C#"],["Godot","GDScript"],["GameMaker","GML"],["Roblox Studio","Luau"]],f:"Setiap engine punya bahasa utama: Unity (C#), Godot (GDScript atau C#), GameMaker (GML), Roblox Studio (Luau)."},
+{t:"catch",h:"Tangkap hanya yang termasuk KOMPONEN game engine",ok:["Rendering","Physics","Input","Audio","Scripting"],no:["Blender","Aseprite","Audacity"],f:"Komponen engine: rendering, physics, input, audio, scripting, dan asset management. Blender, Aseprite, dan Audacity adalah development tool."},
+{t:"order",h:"Susun urutan game loop",s:["Baca input","Proses logika","Perbarui dunia","Gambar tampilan","Audio dan hasil"],f:"Satu putaran proses ini disebut game loop dan berulang terus selama game berjalan."},
+{t:"match",h:"Jodohkan komponen engine dengan tugasnya",p:[["Rendering","Menggambar grafis ke layar"],["Physics","Gerak, gravitasi, tabrakan"],["Input","Membaca perintah pemain"],["Audio","Musik dan efek suara"]],f:"Engine adalah kumpulan sistem terintegrasi, bukan satu fitur tunggal."},
+{t:"catch",h:"Tangkap hanya yang merupakan GAME ENGINE",ok:["Unity","Unreal Engine","Godot","GameMaker"],no:["Blender","Audacity","Aseprite"],f:"Blender membuat aset 3D, Audacity mengolah audio, Aseprite membuat pixel art. Ketiganya bukan engine."},
+{t:"order",h:"Susun alur kerja membuat game",s:["Tentukan ide dan tujuan","Buat prototipe","Buat aset dan level","Implementasi gameplay","Uji dan perbaiki","Build dan distribusi"],f:"Alurnya bisa berulang: jika kontrol tidak nyaman, kembali ke gameplay atau prototipe."},
+{t:"match",h:"Jodohkan component dengan fungsinya pada karakter",p:[["Transform","Posisi, rotasi, skala"],["Renderer","Menampilkan model atau visual"],["Collider","Area deteksi tabrakan"],["Script","Gerakan, skor, aturan"]],f:"Satu game object bisa punya banyak component."},
+{t:"catch",h:"Tangkap hanya KESALAHAN umum pemula (biarkan praktik baik jatuh)",ok:["Langsung buat game besar","Unduh terlalu banyak asset","Tidak menguji","Abaikan target perangkat"],no:["Mulai dari prototipe kecil","Uji tiap fitur","Penamaan folder konsisten"],f:"Selesaikan mekanisme inti dulu, lalu tambahkan konten, efek, dan fitur secara bertahap."},
+{t:"order",h:"Susun alur dari Blender sampai jadi aplikasi",s:["Blender membuat model 3D","Model diimpor ke engine","Karakter diberi script dan animasi","Build jadi aplikasi"],f:"Blender bukan game engine, melainkan alat pembuat aset 3D."},
+{t:"match",h:"Jodohkan istilah dengan pengertiannya",p:[["Asset","Bahan game: model, sprite, musik"],["Script","Logika yang menentukan kejadian"],["Gameplay","Aturan dan pengalaman pemain"],["Runtime","Lingkungan game berjalan"]],f:"Asset menarik tidak otomatis membuat gameplay bagus."}];
+const $=i=>document.getElementById(i),sf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const S={lives:7,score:0,i:0,perf:0,mis:0,lock:true,run:false,over:false,saved:false,saving:false,t0:0,P:null,u:{},tm:[]};
+let AC;function beep(a){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();a.forEach((f,k)=>{const o=AC.createOscillator(),g=AC.createGain();o.type="square";o.frequency.value=f;g.gain.setValueAtTime(.06,AC.currentTime+k*.09);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+k*.09+.15);o.connect(g);g.connect(AC.destination);o.start(AC.currentTime+k*.09);o.stop(AC.currentTime+k*.09+.17)})}catch(e){}}
+$("fm").addEventListener("submit",e=>{e.preventDefault();
+ const n=$("nm").value.trim(),p=$("np").value.trim().toUpperCase(),k=$("kl").value;
+ const a=n.length>=2,b=/^[A-Z0-9][A-Z0-9.\-\/]{3,24}$/.test(p),c=!!k;
+ $("f1").classList.toggle("bad",!a);$("f2").classList.toggle("bad",!b);$("f3").classList.toggle("bad",!c);
+ if(!(a&&b&&c))return;S.u={nama:n,npm:p,kelas:k};start()});
+function start(){Object.assign(S,{lives:CFG.LIVES,score:0,i:0,perf:0,run:true,over:false,saved:false,saving:false,t0:Date.now(),P:null});
+ $("intro").classList.remove("on");$("game").classList.add("on");$("ov").classList.remove("on");
+ $("hn").textContent=S.u.nama;$("hm").textContent="NPM "+S.u.npm+" • "+S.u.kelas;round();window.scrollTo(0,0)}
+function hud(){$("hs").textContent=S.score;$("hq").textContent=Math.min(S.i+1,10)+"/10";
+ $("hr").innerHTML=Array.from({length:CFG.LIVES},(_,k)=>`<i class="${k>=S.lives?"x":""}">❤️</i>`).join("");
+ $("pg").innerHTML=R.map((_,k)=>`<i class="${k<S.i?"d":k===S.i?"c":""}"></i>`).join("")}
+const TN={match:"🔗 JODOHKAN",order:"🔢 SUSUN URUTAN",catch:"🎯 TANGKAP"},IN={match:"Ketuk satu kartu di kiri dan pasangannya di kanan.",order:"Ketuk kartu satu per satu sesuai urutan yang benar.",catch:"Kartu akan jatuh. Ketuk yang benar sebelum menyentuh dasar!"};
+function round(){const r=R[S.i];S.mis=0;S.lock=false;S.tm.forEach(t=>{clearTimeout(t);clearInterval(t)});S.tm=[];
+ $("tp").textContent="MISI "+(S.i+1)+" • "+TN[r.t];$("rh").textContent=r.h;$("ri").textContent=IN[r.t];$("fb").className="fb";$("pl").innerHTML="";hud();
+ ({match:mMatch,order:mOrder,catch:mCatch})[r.t](r)}
+function miss(el){S.lives--;S.mis++;beep([180,120]);if(el){el.classList.remove("sh");void el.offsetWidth;el.classList.add("sh")}hud();if(S.lives<=0)end(true)}
+function end(dead){if(S.lock&&!dead)return;S.lock=true;S.tm.forEach(t=>{clearTimeout(t);clearInterval(t)});
+ const r=R[S.i],pts=Math.max(0,CFG.PT-CFG.PEN*S.mis);S.score+=pts;if(S.mis===0)S.perf++;
+ if(!dead)beep(S.mis?[392,440]:[523,659,784,1047]);
+ const last=dead||S.i===9;$("hs").textContent=S.score;
+ $("ft").innerHTML=`<b>${dead?"Nyawa habis! Poin misi ini: "+pts:S.mis?"Selesai dengan "+S.mis+" kesalahan. +"+pts+" poin":"Sempurna! +"+pts+" poin"}</b><br>`;$("ft").insertAdjacentText("beforeend",r.f);
+ $("fb").className="fb on"+(S.mis?" m":"");$("nx").textContent=last?"Lihat hasil":"Misi berikutnya ➜";
+ $("nx").onclick=()=>{if(last)finish();else{S.i++;round()}}}
+function mMatch(r){const n=r.p.length;let sel=null,d=0;const A=$("pl");A.className="mc";A.innerHTML="<div></div><div></div>";
+ const mk=(box,side)=>sf(r.p.map((x,k)=>[x[side],k])).forEach(([t,k])=>{const b=document.createElement("button");b.className="k";b.textContent=t;b.onclick=()=>{
+  if(S.lock||b.classList.contains("ok"))return;
+  if(sel&&sel.s!==side){if(sel.k===k){[sel.b,b].forEach(x=>x.className="k ok");sel=null;beep([660,880]);if(++d===n)end()}
+   else{const o=sel.b;sel=null;[o,b].forEach(x=>{x.className="k no"});setTimeout(()=>[o,b].forEach(x=>x.className="k"),400);miss()}}
+  else{if(sel)sel.b.classList.remove("sel");sel={b,s:side,k};b.classList.add("sel")}};box.appendChild(b)});
+ mk(A.children[0],0);mk(A.children[1],1)}
+function mOrder(r){let nx=0;const A=$("pl");A.className="od";sf(r.s.map((t,k)=>[t,k])).forEach(([t,k])=>{const b=document.createElement("button");b.className="k";b.textContent=t;b.onclick=()=>{
+ if(S.lock||b.classList.contains("ok"))return;
+ if(k===nx){b.classList.add("ok");b.insertAdjacentHTML("afterbegin","<b>"+(nx+1)+"</b>");nx++;beep([500+nx*60]);if(nx===r.s.length)end()}else miss(b)};A.appendChild(b)})}
+function mCatch(r){const A=$("pl");A.className="cz";const cards=sf([...r.ok.map(t=>[t,1]),...r.no.map(t=>[t,0])]);let res=0,sp=0;
+ const one=()=>{if(sp>=cards.length)return;const[t,g]=cards[sp++];const c=document.createElement("div");c.className="cd";c.textContent=t;
+  c.style.left=Math.random()*Math.max(10,A.clientWidth-190)+"px";let fin=false;
+  const done=()=>{if(fin)return false;fin=true;res++;return true};
+  c.onclick=()=>{if(S.lock||fin)return;done();if(g){c.className="cd g";beep([700,900])}else{c.className="cd b";miss()}setTimeout(()=>{c.remove();chk()},380)};
+  c.addEventListener("animationend",e=>{if(e.animationName!=="fall"||!done())return;c.remove();if(g)miss();chk()});A.appendChild(c)};
+ const chk=()=>{if(res>=cards.length&&!S.lock)end()};
+ one();S.tm.push(setInterval(one,1500))}
+function finish(){if(S.over)return;S.over=true;S.run=false;S.i=10;hud();const dur=Math.round((Date.now()-S.t0)/1000),dead=S.lives<=0;
+ S.P={nama:S.u.nama,npm:S.u.npm,kelas:S.u.kelas,skor:S.score,benar:S.perf,nyawa:S.lives,durasi_detik:dur,status:dead?"Game Over":"Selesai",waktu:new Date().toLocaleString("id-ID",{timeZone:"Asia/Jakarta"})};
+ $("re").textContent=dead?"💀":S.score>=80?"👑":"🏆";$("rt").textContent=dead?"GAME OVER":"SEMUA MISI SELESAI!";
+ $("rw").textContent=S.u.nama+" • NPM "+S.u.npm+" • "+S.u.kelas;$("rsc").textContent=S.score;
+ $("rd").textContent="Misi sempurna "+S.perf+"/10 • Nyawa sisa "+S.lives+" • Waktu "+Math.floor(dur/60)+":"+String(dur%60).padStart(2,"0");
+ $("ov").classList.add("on");beep(dead?[392,330,262,196]:[523,659,784,1047,1319]);save()}
+async function save(){if(S.saving||S.saved||!S.P)return;S.saving=true;const b=$("sv");b.className="sv";b.textContent="Menyimpan nilai ke Google Sheet...";$("rr").style.display="none";
+ try{await fetch(CFG.URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(S.P)});S.saved=true;b.className="sv ok";b.textContent="Nilaimu sudah terkirim ke Google Sheet."}
+ catch(e){b.className="sv fail";b.textContent="Gagal menyimpan. Periksa internet lalu kirim ulang.";$("rr").style.display=""}
+ S.saving=false}
+$("rr").onclick=save;
+$("ra").onclick=()=>{$("ov").classList.remove("on");$("game").classList.remove("on");$("intro").classList.add("on")};
+addEventListener("pagehide",()=>{if(S.run&&!S.over&&!S.saved&&S.i>0){const p={...S.u,skor:S.score,benar:S.perf,nyawa:S.lives,durasi_detik:Math.round((Date.now()-S.t0)/1000),status:"Keluar sebelum selesai",waktu:new Date().toLocaleString("id-ID",{timeZone:"Asia/Jakarta"})};
+ try{navigator.sendBeacon(CFG.URL,new Blob([JSON.stringify(p)],{type:"text/plain;charset=UTF-8"}))}catch(e){}}});
+</script></body></html>
